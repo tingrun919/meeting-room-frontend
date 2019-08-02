@@ -24,6 +24,15 @@ const config: IConfig =  {
       },
     }],
   ],
+  proxy: {
+    '/api': {
+      target: 'http://mrtest.85ido.com',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api': '',
+      },
+    },
+  }
 }
 
 export default config;
