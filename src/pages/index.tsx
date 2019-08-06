@@ -1,21 +1,13 @@
 import React from 'react';
 import { Button } from 'antd-mobile';
 import styles from './index.css';
+import PullToRefreshComponent from '../components/PullToRefreshComponent'
 
 
-export default function() {
-  return (
-    <div className={styles.normal}>
-      <div className={styles.welcome} />
-      <ul className={styles.list}>
-        <li>To get started, edit <code>src/pages/index.js</code> and save to reload.</li>
-        <li>
-          <Button type="primary">You're arrived</Button>
-          <a href="https://umijs.org/guide/getting-started.html">
-            Getting Started
-          </a>
-        </li>
-      </ul>
-    </div>
-  );
+export default function () {
+	return (
+		<div className={styles.normal}>
+			<PullToRefreshComponent />
+		</div>
+	);
 }
