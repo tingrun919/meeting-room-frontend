@@ -1,33 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { ListView, PullToRefresh } from 'antd-mobile';
-const data = [
-	{
-		img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-		title: 'Meet hotel',
-		des: '不是所有的兼职汪都需要风吹日晒不是所有的兼职汪都需要风吹日晒',
-	},
-	{
-		img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-		title: 'McDonald\'s invites you',
-		des: '不是所有的兼职汪都需要风吹日晒不是所有的兼职汪都需要风吹日晒',
-	},
-	{
-		img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-		title: 'Eat the week',
-		des: '不是所有的兼职汪都需要风吹日晒不是所有的兼职汪都需要风吹日晒',
-	},
-];
-
-const NUM_ROWS = 20;
-
-function genData(pIndex = 0) {
-	const dataArr = [];
-	for (let i = 0; i < NUM_ROWS; i++) {
-		dataArr.push(`row - ${(pIndex * NUM_ROWS) + i}`);
-	}
-	return dataArr;
-}
+import { ListView, PullToRefresh, Tag } from 'antd-mobile';
+import styles from './index.less';
 
 class PullToRefreshComponent extends PureComponent {
 	constructor(props: any) {
@@ -46,74 +20,65 @@ class PullToRefreshComponent extends PureComponent {
 	handleRoomList = () => {
 		this.props.dispatch({
 			type: 'roomList/fetchList',
+		}).then(() => {
+			const { roomData } = this.props
+			this.setState({
+				dataSource: this.state.dataSource.cloneWithRows(roomData),
+				refreshing: false,
+				isLoading: false,
+			});
 		})
 	}
 
 	componentDidMount() {
 		this.handleRoomList()
-		// const hei = this.state.height - ReactDOM.findDOMNode(this.lv).offsetTop;
-
-		this.setState({
-			// height: hei,
-		})
-		setTimeout(() => {
-			this.rData = genData();
-			this.setState({
-				dataSource: this.state.dataSource.cloneWithRows(genData()),
-				// height: hei,
-				refreshing: false,
-				isLoading: false,
-			});
-		}, 1500);
 	}
 
 	onRefresh = () => {
 		this.setState({ refreshing: true, isLoading: true });
-		// simulate initial Ajax
-		setTimeout(() => {
-			this.rData = genData();
-			this.setState({
-				dataSource: this.state.dataSource.cloneWithRows(this.rData),
-				refreshing: false,
-				isLoading: false,
-			});
-		}, 600);
+		this.handleRoomList()
 	};
 
 	render() {
-		const separator = (sectionID, rowID) => (
+		const { roomData } = this.props
+		const separator = (sectionID: any, rowID: any) => (
 			<div
 				key={`${sectionID}-${rowID}`}
 				style={{
 					backgroundColor: '#F5F5F9',
 					height: 8,
-					borderTop: '1px solid #ECECED',
-					borderBottom: '1px solid #ECECED',
 				}}
 			/>
 		);
 
-		let index = data.length - 1;
-		const row = (rowData, sectionID, rowID) => {
+		let index = roomData.length - 1;
+		const row = (rowData: any, sectionID: any, rowID: any) => {
 			if (index < 0) {
-				index = data.length - 1;
+				index = roomData.length - 1;
 			}
-			const obj = data[index--];
+			const obj = roomData[index--];
 			return (
 				<div
 					key={rowID}
 					style={{
 						backgroundColor: 'white',
+						padding: '10px',
 					}}
 				>
-					<div style={{ height: '50px', lineHeight: '50px', color: '#888', fontSize: '18px', borderBottom: '1px solid #ddd' }}>
-						{obj.title}
-					</div>
-					<div style={{ display: '-webkit-box', display: 'flex', borderColor: 'red' }}>
-						<img style={{ height: '63px', width: '63px', marginRight: '15px' }} src={obj.img} alt="" />
-						<div style={{ display: 'inline-block' }}>
-							<div style={{ marginBottom: '8px', color: '#000', fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '250px' }}>{obj.des}</div>
-							<div style={{ fontSize: '16px' }}><span style={{ fontSize: '30px', color: '#FF6E27' }}>{rowID}</span> 元/任务</div>
+					<div style={{ display: 'flex' }}>
+						<div style={{ display: 'flex', alignItems: 'center' }}>
+							<img style={{ height: '63px', width: '63px', marginRight: '15px', }} src={obj.imgPath} alt="" />
+						</div>
+						<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+							<div>
+								<span style={{ fontSize: '20px' }}>{obj.name}</span>
+							</div>
+							<div style={{ marginTop: '3px' }}>
+								<span style={{ fontSize: '12px', color: '#999' }}>会议室地点：{obj.alias}</span>
+							</div>
+							<div style={{ marginTop: '10px' }}>
+								{obj.tags.map((item: string, index: number) => <Tag style={{ marginRight: "3px", color: '#108ee9', border: '1px solid #108ee9' }} small={true} key={index}>{item}</Tag>)}
+							</div>
 						</div>
 					</div>
 				</div>
@@ -122,15 +87,13 @@ class PullToRefreshComponent extends PureComponent {
 		return (
 			<ListView
 				dataSource={this.state.dataSource}//list-view 实例
-				ref={el => this.lv = el}
 				useBodyScroll={this.state.useBodyScroll} //使用html的body作为滚动容器
 				renderRow={row} //从数据源中接收数据，返回一个渲染的组件来为这行数据进行渲染
 				renderSeparator={separator}
 				style={this.state.useBodyScroll ? {} : {
 					height: this.state.height,
-					// border: '1px solid #ddd',
-					margin: '5px 0',
 				}}
+				className={styles.renderRow}
 				pageSize={5} //每次事件循环（每帧）渲染的行数
 				pullToRefresh={ //使用 pullToRefresh，需要和 PullToRefresh 组件一起使用
 					<PullToRefresh
