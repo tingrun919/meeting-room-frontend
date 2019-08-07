@@ -10,7 +10,7 @@ export default {
 			const response = yield call(handleRoomList, payload)
 			yield put({
 				type: "setRoomList",
-				payload: response.data
+				payload: response
 			})
 		}
 	},
