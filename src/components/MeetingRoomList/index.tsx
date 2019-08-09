@@ -64,9 +64,12 @@ export default class MeetingRoomList extends PureComponent {
 		);
 		//item
 		const row = (rowData: any, sectionID: any, rowID: any) => {
-			<MeetingRoomRow
-				rowData={rowData}
-				rowID={rowID} />
+			return (
+				<MeetingRoomRow
+					rowData={rowData}
+					rowID={rowID}
+				/>
+			)
 		};
 		return (
 			<ListView
