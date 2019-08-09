@@ -4,15 +4,7 @@ body,
 	height: 100%;
 }
 
-#root {
-	/* overflow: hidden; */
-}
 
 body {
 	margin: 0;
-}
-
-.am-list-view-scrollview-content .am-list {
-	position: relative;
-	width   : 0;
 }

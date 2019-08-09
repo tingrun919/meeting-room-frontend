@@ -4,7 +4,7 @@ import { WingBlank } from 'antd-mobile';
 
 const BasicLayout: React.FC = props => {
 	return (
-		<WingBlank>
+		<WingBlank size="md">
 			< div className={styles.normal} >
 				{props.children}
 			</div >
