@@ -8,6 +8,10 @@ const handleRoomList = () => {
 	return request(`/meetingrooms`);
 }
 
+export function reservationList({ roomId }) {
+  return request.get(`/meetingrooms/${roomId}/userecords`);
+}
+
 export {
 	handleRoomList,
 }
