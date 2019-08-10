@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import Link from 'umi/link';
 import { connect } from 'dva';
 import { ListView, PullToRefresh } from 'antd-mobile';
 import styles from './index.less';
@@ -65,10 +66,12 @@ export default class MeetingRoomList extends PureComponent {
 		//item
 		const row = (rowData: any, sectionID: any, rowID: any) => {
 			return (
-				<MeetingRoomRow
-					rowData={rowData}
-					rowID={rowID}
-				/>
+        <Link to={`/meetingroom/${rowData.id}`}>
+          <MeetingRoomRow
+            rowData={rowData}
+            rowID={rowID}
+          />
+        </Link>
 			)
 		};
 		return (
