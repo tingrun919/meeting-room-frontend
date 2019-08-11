@@ -1,16 +1,21 @@
-import React, { Ref } from 'react';
+import React from 'react';
 import { Button, List, InputItem, DatePicker, Toast } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import dayjs from 'dayjs';
 
 import styles from './AddReservation.css';
+import roomUseRecordService, { InRecordExists } from '@/service/roomUseRecord';
 
+interface AddReservationProps {
+  form: any;
+  roomId: string;
+}
 interface AddReservationState {
   startTime: Date;
   endTime: Date;
 }
 
-class AddReservation extends React.Component<any, AddReservationState> {
+class AddReservation extends React.Component<AddReservationProps, AddReservationState> {
   creatorInput!: InputItem;
   tokenInput!: InputItem;
   minDate = dayjs('2016-1-1').toDate();
@@ -46,6 +51,70 @@ class AddReservation extends React.Component<any, AddReservationState> {
     });
   }
 
+  startTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
+    const otherValue = this.props.form.getFieldValue('endTime');
+    Toast.loading('正在检查时间段是否可用');
+    return this.checkReservationRange({
+      startTime: value,
+      endTime: otherValue
+    }).then(
+      () => {
+        Toast.hide();
+        callback();
+      },
+      (msg: string) => {
+        Toast.hide();
+        Toast.fail(msg);
+        callback(new Error(msg));
+      }
+    );
+  };
+
+  endTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
+    const { form } = this.props;
+    const otherValue = form.getFieldValue('startTime');
+    Toast.loading('正在检查时间段是否可用');
+    return this.checkReservationRange({
+      startTime: otherValue,
+      endTime: value
+    }).then(
+      () => {
+        Toast.hide();
+        callback();
+      },
+      (msg: string) => {
+        Toast.hide();
+        Toast.fail(msg);
+        callback();
+        form.setFields({
+          startTime: {
+            value: otherValue,
+            errors: [
+              new Error(msg)
+            ]
+          }
+        });
+      }
+    );
+  };
+
+  checkReservationRange: (options: Omit<InRecordExists, 'roomId'>) => Promise<void> =
+    (options: Omit<InRecordExists, 'roomId'>) => {
+      const params = Object.assign({}, options, {
+        roomId: this.props.roomId
+      });
+      return roomUseRecordService.exists(params)
+        .catch(() => {
+          Toast.info('检查预约时间段失败，请稍后重试');
+          return { exists: true };
+        })
+        .then(({ exists }) => {
+          if (exists) {
+            return Promise.reject('预约已存在，请选择其他时间段');
+          }
+        });
+    };
+
   render() {
     const { minDate } = this;
     const { startTime, endTime } = this.state;
@@ -54,7 +123,8 @@ class AddReservation extends React.Component<any, AddReservationState> {
       <List>
         <DatePicker
           {...getFieldProps('startTime', {
-            initialValue: startTime
+            initialValue: startTime,
+            rules: [{ validator: this.startTimeChanged }]
           })}
           mode="datetime"
           title="开始时间"
@@ -64,7 +134,8 @@ class AddReservation extends React.Component<any, AddReservationState> {
         </DatePicker>
         <DatePicker
           {...getFieldProps('endTime', {
-            initialValue: endTime
+            initialValue: endTime,
+            rules: [{ validator: this.endTimeChanged }]
           })}
           mode="datetime"
           title="结束时间"
