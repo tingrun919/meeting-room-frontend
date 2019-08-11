@@ -15,7 +15,7 @@ export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
       <div>
         <Accordion>
           <Accordion.Panel header="添加预约" key="add-reservation">
-            <AddReservation />
+            <AddReservation roomId={roomId} />
           </Accordion.Panel>
         </Accordion>
         <WhiteSpace size="lg" />
