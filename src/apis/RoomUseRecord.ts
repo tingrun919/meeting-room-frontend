@@ -51,6 +51,15 @@ export interface RoomUseRecord {
   useToken: string;
 }
 
+export interface CreateRoomUseRecord
+  extends Pick<RoomUseRecord, 'meetingRoom' | 'startTime' | 'endTime' | 'creator'> {
+    description?: string;
+    /**
+     * 预约的密码
+     */
+    token?: string;
+}
+
 /**
  * 预约状态
  */
