@@ -5,9 +5,12 @@ import dayjs from 'dayjs';
 
 import styles from './AddReservation.css';
 import roomUseRecordService, { InRecordExists } from '@/service/roomUseRecord';
+import { connect } from 'dva';
 
 interface AddReservationProps {
   form: any;
+  dispatch: any;
+  loading: boolean;
   roomId: string;
 }
 interface AddReservationState {
@@ -42,13 +45,31 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
     };
   }
 
-  onSubmit = () => {
+  resetForm = () => {
     const { form } = this.props;
-    form.validateFields({ force: true }, error => {
-      if (error) {
-        Toast.fail('你得好好填');
-      }
-    });
+    form.resetFields();
+  }
+
+  onSubmit = () => {
+    const { form, dispatch, roomId } = this.props;
+    form.validateFields({ force: true })
+      .then(values => {
+        Toast.loading('正在创建预约', 0);
+        const record = Object.assign({}, values, {
+          meetingRoom: roomId
+        });
+
+        dispatch({
+          type: 'roomItem/create',
+          payload: record
+        }).then(() => {
+          Toast.hide();
+          this.resetForm();
+        });
+      })
+      .catch(() => {
+        Toast.info('你得好好填');
+      });
   }
 
   startTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
@@ -118,7 +139,9 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   render() {
     const { minDate } = this;
     const { startTime, endTime } = this.state;
+    const { loading } = this.props;
     const { getFieldProps, getFieldError } = this.props.form;
+
     return (
       <List>
         <DatePicker
@@ -177,11 +200,23 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
           描述
         </InputItem>
         <List.Item>
-          <Button type="primary" onClick={this.onSubmit}>预约</Button>
+          <Button
+            type="primary"
+            loading={loading}
+            onClick={this.onSubmit}
+          >
+            预约
+          </Button>
         </List.Item>
       </List>
     );
   }
 }
 
-export default createForm()(AddReservation);
+function mapStateToProps(state: any) {
+  return {
+    loading: state.loading.models.roomItem
+  };
+}
+
+export default connect(mapStateToProps)(createForm()(AddReservation));
