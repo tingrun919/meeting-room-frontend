@@ -2,6 +2,10 @@
 
 export interface RoomUseRecord {
   /**
+   * 对应的会议室Id
+   */
+  meetingRoom: string;
+  /**
    * ISO8601，创建时间
    */
   createdAt: string;
