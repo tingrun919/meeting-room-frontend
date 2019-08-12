@@ -4,6 +4,8 @@ import { Tag, Card } from 'antd-mobile';
 import dayjs from '@/utils/dayjs';
 import styles from './index.less';
 
+import MeetingRoomDetail from '../MeetingRoomDetail'
+
 const MeetingRoomRow = ({ rowData, rowID }) => {
 	let current = {
 		creator: '暂无'
@@ -27,23 +29,9 @@ const MeetingRoomRow = ({ rowData, rowID }) => {
 		>
 			<Card.Body>
 				{/* meeting-room description jsx start */}
-				<div className={styles.flex}>
-					<div className={styles.roomImgFlex}>
-						<img className={styles.roomImg} src={rowData.imgPath} alt="" />
-					</div>
-					<div className={styles.roomDescrption}>
-						<div>
-							<span className={styles.fontSize20}>{rowData.name}</span>
-						</div>
-						<div className={styles.marginTop3}>
-							<span className={styles.roomAddress}>会议室地点：{rowData.alias}</span>
-						</div>
-						<div className={styles.marginTop10}>
-							{rowData.tags ?
-								rowData.tags.map((item: string, index: number) => <Tag className={styles.tagCustom} small={true} key={index}>{item}</Tag>) : null}
-						</div>
-					</div>
-				</div>
+				<MeetingRoomDetail
+					meetingRoom={rowData}
+				/>
 				{/* meeting-room descrption jsx end */}
 				{/* reservation jsx start */}
 				<div className={`${styles.marginTop10} ${styles.roomDescrption}`}>

@@ -66,12 +66,12 @@ export default class MeetingRoomList extends PureComponent {
 		//item
 		const row = (rowData: any, sectionID: any, rowID: any) => {
 			return (
-        <Link to={`/meetingroom/${rowData.id}`}>
-          <MeetingRoomRow
-            rowData={rowData}
-            rowID={rowID}
-          />
-        </Link>
+				<Link to={`/meetingroom/${rowData.id}`}>
+					<MeetingRoomRow
+						rowData={rowData}
+						rowID={rowID}
+					/>
+				</Link>
 			)
 		};
 		return (
