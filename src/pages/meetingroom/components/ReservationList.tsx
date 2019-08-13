@@ -10,26 +10,26 @@ import PopoverComponent from '@/components/PopoverComponent';
 import styles from './ReservationList.less';
 
 interface ReservationListProps {
-	roomId: string;
-	dispatch: any;
-	reservationList: RoomUseRecord[];
-	loading: boolean;
+  roomId: string;
+  dispatch: any;
+  reservationList: RoomUseRecord[];
+  loading: boolean;
 }
 
 function ReservationList({
-	roomId,
-	dispatch,
-	reservationList,
-	loading
+  roomId,
+  dispatch,
+  reservationList,
+  loading
 }: ReservationListProps) {
-	useEffect(() => {
-		dispatch({
-			type: 'roomItem/fetch',
-			payload: {
-				roomId: roomId
-			}
-		});
-	}, []);
+  useEffect(() => {
+    dispatch({
+      type: 'roomItem/fetch',
+      payload: {
+        roomId: roomId
+      }
+    });
+  }, []);
 
 	//渲染Popover overlay
 	// icon: 'check-circle-o',
@@ -90,10 +90,10 @@ function ReservationList({
 }
 
 function mapStateToProps(state: any) {
-	return {
-		reservationList: state.roomItem.reservationList,
-		loading: state.loading.models.roomItem
-	};
+  return {
+    reservationList: state.roomItem.reservationList,
+    loading: state.loading.models.roomItem
+  };
 }
 
 export default connect(mapStateToProps)(ReservationList);
