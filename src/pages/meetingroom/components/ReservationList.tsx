@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Card } from 'antd-mobile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { RoomUseRecord, RecordStatus } from '@/apis/RoomUseRecord';
+import { RoomUseRecord, Status, RecordStatus } from '@/apis/RoomUseRecord';
 import PopoverComponent from '@/components/PopoverComponent';
 
 import styles from './ReservationList.less';
@@ -46,15 +46,22 @@ function ReservationList({
 				let recordStatusDesc: string = '我不知道，你造吧';
 				switch (x.recordStatus) {
 					case RecordStatus.NotStarted:
-						recordStatusDesc = '未开始';
+            recordStatusDesc = x.status === Status.Normal ? '未开始' : '已取消';
 						break;
 					case RecordStatus.InProgress:
-						recordStatusDesc = '进行中';
+            recordStatusDesc = x.status === Status.Normal ? '进行中' : '已用完';
 						break;
 					case RecordStatus.Closed:
 						recordStatusDesc = '已结束';
 						break;
 				}
+
+        let displayEndTime;
+        if (x.status === Status.Normal) {
+          displayEndTime = x.endTime;
+        } else if (x.status === Status.Finished) {
+          displayEndTime = x.recordStatus === RecordStatus.NotStarted ? x.rawEndTime : x.endTime;
+        }
 
 				return (
 					<Card full={true} key={x.id}>
@@ -69,7 +76,7 @@ function ReservationList({
 						/>
 						<Card.Body>
 							<div className={styles['reservation-range']}>
-								{dayjs(x.startTime).format('MM-DD HH:mm')} 到 {dayjs(x.endTime).format('MM-DD HH:mm')}
+                {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {dayjs(displayEndTime).format('MM-DD HH:mm')}
 							</div>
 							<div className={styles['reservation-status']}>
 								{x.creator}:{recordStatusDesc}
