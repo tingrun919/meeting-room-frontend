@@ -1,25 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import router from 'umi/router';
+import { DispatchProp } from 'dva';
 import { RouteComponentProps } from 'react-router';
-import { Accordion, WhiteSpace } from 'antd-mobile';
+import { get } from 'lodash';
+import { ActivityIndicator, Accordion, Card, Toast, WhiteSpace } from 'antd-mobile';
 
+import MeetingRoomDetail from '@/components/MeetingRoomDetail';
 import AddReservation from './components/AddReservation';
 import ReservationList from './components/ReservationList';
 
-interface MeetingRoomItemProps extends RouteComponentProps<{ id: string }> {
+import { getMeetingRoom } from '@/service/roomList';
+
+import styles from './MeetingRoomItem.less';
+
+interface MeetingRoomItemProps
+  extends RouteComponentProps<{ id: string }>, DispatchProp {
 
 }
 
 export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
-    const { id: roomId } = match.params;
-    return (
-      <div>
+  const { id: roomId } = match.params;
+
+  const [ meetingRoom, setMeetingRoom ] = useState();
+  const [ loading, setLoading ] = useState();
+  useEffect(() => {
+    setLoading(true);
+    getMeetingRoom(roomId)
+      .then(result => {
+        setLoading(false);
+        setMeetingRoom(result);
+      })
+      .catch(error => {
+        const busError = get(error, 'busError', {});
+        Toast.fail(`加载会议室失败，${busError.message || error.message}`, undefined, () => {
+          if (busError.code === -32404) {
+            router.goBack();
+          }
+        });
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    <div className={styles['meetingroom-item']}>
+      <ActivityIndicator
+        toast={true}
+        animating={loading}
+        text="正在加载会议室"
+      />
+      <div className={styles['meetingroom-fixed']}>
+        {meetingRoom ? (
+          <Card full={true}>
+            <Card.Body>
+              <MeetingRoomDetail meetingRoom={meetingRoom} />
+            </Card.Body>
+          </Card>
+        ) : ''}
         <Accordion>
           <Accordion.Panel header="添加预约" key="add-reservation">
             <AddReservation roomId={roomId} />
           </Accordion.Panel>
         </Accordion>
-        <WhiteSpace size="lg" />
+      </div>
+      <WhiteSpace size="lg" />
+      <div className={styles['meetingroom-reservations']}>
         <ReservationList roomId={roomId}/>
       </div>
-    );
+    </div>
+  );
 }
