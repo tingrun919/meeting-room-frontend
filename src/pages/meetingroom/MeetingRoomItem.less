@@ -1,0 +1,17 @@
+.meetingroom {
+  &-item {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  &-fixed {
+    box-shadow: 0 6px 5px -5px rgba(0, 0, 0, 0.35);
+  }
+
+  &-reservations {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
