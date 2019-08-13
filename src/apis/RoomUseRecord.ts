@@ -18,7 +18,9 @@ export interface RoomUseRecord {
    */
   description: string;
   /**
-   * ISO8601，预约结束时间
+   * ISO8601
+   * 当status=NORMAL 时，预约结束时间；
+   * 当status=FINISHED 时，进行完成操作的时间。
    */
   endTime: string;
   /**
@@ -30,7 +32,13 @@ export interface RoomUseRecord {
    */
   isDelete: boolean;
   /**
-   * 预约状态
+   * ISO8601
+   * 当status=NORMAL 时，为null；
+   * 当status=FINISHED 时，为原始预约结束时间。
+   */
+  rawEndTime: string;
+  /**
+   * 预约相对当前时间的状态
    */
   recordStatus: RecordStatus;
   /**
@@ -38,9 +46,9 @@ export interface RoomUseRecord {
    */
   startTime: string;
   /**
-   * 我也忘了是啥了
+   * 预约的状态（如被手动完成等）
    */
-  status: string;
+  status: Status;
   /**
    * ISO8601，最后修改时间
    */
@@ -61,11 +69,18 @@ export interface CreateRoomUseRecord
 }
 
 /**
- * 预约状态
+ * 预约相对当前时间的状态
  */
 export enum RecordStatus {
-  Canceled = "Canceled",
-  Closed = "Closed",
-  InProgress = "InProgress",
-  NotStarted = "NotStarted",
+  NotStarted = 'NotStarted',
+  InProgress = 'InProgress',
+  Closed = 'Closed',
+}
+
+/**
+ * 预约的状态（如被手动完成等）
+ */
+export enum Status {
+  Normal = 'NORMAL',
+  Finished = 'FINISHED'
 }
