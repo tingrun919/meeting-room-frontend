@@ -202,7 +202,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
 
 function mapStateToProps(state: any) {
   return {
-    loading: state.loading.models.roomItem
+    loading: state.loading.effects['roomItem/create']
   };
 }
 

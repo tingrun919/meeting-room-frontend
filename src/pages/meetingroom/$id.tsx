@@ -51,7 +51,7 @@ function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) 
       </div>
       <WhiteSpace size="lg" />
       <div className={styles['meetingroom-reservations']}>
-        <ReservationList roomId={roomId}/>
+        {meetingRoom && <ReservationList roomId={roomId}/>}
       </div>
     </div>
   );
