@@ -54,11 +54,18 @@ function ReservationList({
             break;
         }
 
-        let displayEndTime;
-        if (x.status === Status.Normal) {
-          displayEndTime = x.endTime;
-        } else if (x.status === Status.Finished) {
-          displayEndTime = x.recordStatus === RecordStatus.NotStarted ? x.rawEndTime : x.endTime;
+        const rangeClassNames = [styles['reservation-range']];
+        let displayEndTime = <>{dayjs(x.rawEndTime || x.endTime).format('MM-DD HH:mm')}</>;
+        if (x.status === Status.Finished) {
+          displayEndTime = (
+            <>
+              <del>
+                {displayEndTime}
+              </del>
+              <span className={styles['finished-at']}>{dayjs(x.endTime).format('MM-DD HH:mm')}</span>
+            </>
+          );
+          rangeClassNames.push(styles['finished']);
         }
 
         return (
@@ -73,8 +80,8 @@ function ReservationList({
               extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
             />
             <Card.Body>
-              <div className={styles['reservation-range']}>
-                {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {dayjs(displayEndTime).format('MM-DD HH:mm')}
+              <div className={rangeClassNames.join(' ')}>
+                {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {displayEndTime}
               </div>
               <div className={styles['reservation-status']}>
                 {x.creator}:{recordStatusDesc}
