@@ -70,18 +70,21 @@ const model = {
 
     /**
      * 完成预约
-     * @param {*} { payload }
-     * @param {*} { call }
-     * @returns
      */
-    *fetchReservationDone({ payload }, { call }) {
+    *fetchReservationDone({ payload }, { call, select, put }: EffectsCommandMap) {
       try {
-        const response = yield call(handleDoneReservation, payload)
-        return response
+        const response = yield call(handleDoneReservation, payload);
+        const meetingRoom = yield select(state => state.roomItem.meetingRoom);
+        yield put({
+          type: 'fetch',
+          payload: {
+            roomId: meetingRoom.id
+          }
+        });
+        return response;
       } catch ({ busError }) {
-        Toast.fail(busError.message)
+        Toast.fail(busError.message);
       }
-
     }
   },
   subscriptions: {
