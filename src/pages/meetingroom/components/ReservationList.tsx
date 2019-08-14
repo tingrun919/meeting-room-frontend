@@ -76,7 +76,7 @@ function ReservationList({
             <Card.Header
               title={
                 <span>
-                  {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : ''}
+                  {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : null}
                   {x.description}
                 </span>
               }
