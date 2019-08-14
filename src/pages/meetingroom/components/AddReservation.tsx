@@ -1,17 +1,19 @@
 import React from 'react';
+import { connect } from 'dva';
 import { Button, List, InputItem, DatePicker, Toast } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import dayjs from 'dayjs';
 
 import styles from './AddReservation.css';
 import roomUseRecordService, { InRecordExists } from '@/service/roomUseRecord';
-import { connect } from 'dva';
+import { RoomUseRecord } from '@/apis/RoomUseRecord';
 
 interface AddReservationProps {
   form: any;
   dispatch: any;
   loading: boolean;
   roomId: string;
+  onAdded?: (record: RoomUseRecord) => void;
 }
 interface AddReservationState {
   startTime: Date;
@@ -62,9 +64,12 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
         dispatch({
           type: 'roomItem/create',
           payload: record
-        }).then(() => {
+        }).then((record: RoomUseRecord) => {
           Toast.hide();
           this.resetForm();
+          if (typeof this.props.onAdded === 'function') {
+            this.props.onAdded(record);
+          }
         });
       })
       .catch(() => {

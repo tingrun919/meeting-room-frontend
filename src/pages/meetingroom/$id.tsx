@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, DispatchProp } from 'dva';
 import { RouteComponentProps } from 'react-router';
 import DocumentTitle from 'react-document-title';
@@ -20,6 +20,11 @@ interface MeetingRoomItemProps
 
 function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) {
   const { id: roomId } = match.params;
+  const [activeKey, setActiveKey] = useState();
+
+  function collapseAddReservation() {
+    setActiveKey(null);
+  }
 
   let meetingRoomItem = null;
   if (meetingRoom != null) {
@@ -43,9 +48,12 @@ function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) 
       />
       <div className={styles['meetingroom-fixed']}>
         {meetingRoomItem}
-        <Accordion>
+        <Accordion activeKey={activeKey} onChange={setActiveKey}>
           <Accordion.Panel header="添加预约" key="add-reservation">
-            <AddReservation roomId={roomId} />
+            <AddReservation
+              roomId={roomId}
+              onAdded={collapseAddReservation}
+            />
           </Accordion.Panel>
         </Accordion>
       </div>
