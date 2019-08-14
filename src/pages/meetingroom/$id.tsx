@@ -1,46 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import router from 'umi/router';
-import { DispatchProp } from 'dva';
+import React from 'react';
+import { connect, DispatchProp } from 'dva';
 import { RouteComponentProps } from 'react-router';
-import { get } from 'lodash';
 import DocumentTitle from 'react-document-title';
-import { ActivityIndicator, Accordion, Card, Toast, WhiteSpace } from 'antd-mobile';
+import { ActivityIndicator, Accordion, Card, WhiteSpace } from 'antd-mobile';
 
 import MeetingRoomDetail from '@/components/MeetingRoomDetail';
 import AddReservation from './components/AddReservation';
 import ReservationList from './components/ReservationList';
 
-import { getMeetingRoom } from '@/service/roomList';
+import { MeetingRoom } from '@/apis/MeetingRoom';
 
 import styles from './MeetingRoomItem.less';
 
 interface MeetingRoomItemProps
   extends RouteComponentProps<{ id: string }>, DispatchProp {
-
+    loading: boolean;
+    meetingRoom: MeetingRoom;
 }
 
-export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
+function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) {
   const { id: roomId } = match.params;
-
-  const [ meetingRoom, setMeetingRoom ] = useState();
-  const [ loading, setLoading ] = useState();
-  useEffect(() => {
-    setLoading(true);
-    getMeetingRoom(roomId)
-      .then(result => {
-        setLoading(false);
-        setMeetingRoom(result);
-      })
-      .catch(error => {
-        const busError = get(error, 'busError', {});
-        Toast.fail(`加载会议室失败，${busError.message || error.message}`, undefined, () => {
-          if (busError.code === -32404) {
-            router.goBack();
-          }
-        });
-        setLoading(false);
-      });
-  }, []);
 
   let meetingRoomItem = null;
   if (meetingRoom != null) {
@@ -77,3 +56,12 @@ export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
     </div>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    meetingRoom: state.roomItem.meetingRoom,
+    loading: state.loading.effects['roomItem/fetchMeetingRoom']
+  };
+}
+
+export default connect(mapStateToProps)(MeetingRoomItem);
