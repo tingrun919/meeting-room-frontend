@@ -13,14 +13,12 @@ interface ReservationListProps {
   roomId: string;
   dispatch: any;
   reservationList: RoomUseRecord[];
-  loading: boolean;
 }
 
 function ReservationList({
   roomId,
   dispatch,
-  reservationList,
-  loading
+  reservationList
 }: ReservationListProps) {
   useEffect(() => {
     dispatch({
@@ -91,8 +89,7 @@ function ReservationList({
 
 function mapStateToProps(state: any) {
   return {
-    reservationList: state.roomItem.reservationList,
-    loading: state.loading.models.roomItem
+    reservationList: state.roomItem.reservationList
   };
 }
 
