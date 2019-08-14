@@ -11,7 +11,6 @@ import { MeetingRoom } from '@/apis/MeetingRoom';
 const MeetingRoomPagePattern = /^\/meetingroom\/(.*)$/;
 
 const model = {
-  namespace: 'roomItem',
   state: {
     meetingRoom: null,
     reservationList: [],
