@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import dayjs from 'dayjs';
 import { Card } from 'antd-mobile';
+import { get } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { RoomUseRecord, Status, RecordStatus } from '@/apis/RoomUseRecord';
@@ -14,6 +15,19 @@ interface ReservationListProps {
   dispatch: any;
   reservationList: RoomUseRecord[];
 }
+
+const StatusRecordStatusMapping = {
+  [Status.Normal]: {
+    [RecordStatus.NotStarted]: '未开始',
+    [RecordStatus.InProgress]: '进行中',
+    [RecordStatus.Closed]: '已结束'
+  },
+  [Status.Finished]: {
+    [RecordStatus.NotStarted]: '已取消',
+    [RecordStatus.InProgress]: '已用完',
+    [RecordStatus.Closed]: '已用完'
+  }
+};
 
 function ReservationList({
   roomId,
@@ -41,18 +55,7 @@ function ReservationList({
   return (
     <div>
       {...reservationList.map(x => {
-        let recordStatusDesc: string = '我不知道，你造吧';
-        switch (x.recordStatus) {
-          case RecordStatus.NotStarted:
-            recordStatusDesc = x.status === Status.Normal ? '未开始' : '已取消';
-            break;
-          case RecordStatus.InProgress:
-            recordStatusDesc = x.status === Status.Normal ? '进行中' : '已用完';
-            break;
-          case RecordStatus.Closed:
-            recordStatusDesc = '已结束';
-            break;
-        }
+        let recordStatusDesc: string = get(StatusRecordStatusMapping, [x.status, x.recordStatus], '我不知道，你造吧');
 
         const rangeClassNames = [styles['reservation-range']];
         let displayEndTime = <>{dayjs(x.rawEndTime || x.endTime).format('MM-DD HH:mm')}</>;
