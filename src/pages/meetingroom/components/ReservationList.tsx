@@ -31,30 +31,30 @@ function ReservationList({
     });
   }, []);
 
-	//渲染Popover overlay
-	// icon: 'check-circle-o',
-	// iconSize: 'xs',//默认xs
-	// title: '完成',
-	const itemData = [{
-		icon: 'check-circle-o',
-		title: '完成',
-	}]
+  //渲染Popover overlay
+  // icon: 'check-circle-o',
+  // iconSize: 'xs',//默认xs
+  // title: '完成',
+  const itemData = [{
+    icon: 'check-circle-o',
+    title: '完成',
+  }]
 
-	return (
-		<div>
-			{...reservationList.map(x => {
-				let recordStatusDesc: string = '我不知道，你造吧';
-				switch (x.recordStatus) {
-					case RecordStatus.NotStarted:
+  return (
+    <div>
+      {...reservationList.map(x => {
+        let recordStatusDesc: string = '我不知道，你造吧';
+        switch (x.recordStatus) {
+          case RecordStatus.NotStarted:
             recordStatusDesc = x.status === Status.Normal ? '未开始' : '已取消';
-						break;
-					case RecordStatus.InProgress:
+            break;
+          case RecordStatus.InProgress:
             recordStatusDesc = x.status === Status.Normal ? '进行中' : '已用完';
-						break;
-					case RecordStatus.Closed:
-						recordStatusDesc = '已结束';
-						break;
-				}
+            break;
+          case RecordStatus.Closed:
+            recordStatusDesc = '已结束';
+            break;
+        }
 
         let displayEndTime;
         if (x.status === Status.Normal) {
@@ -63,30 +63,30 @@ function ReservationList({
           displayEndTime = x.recordStatus === RecordStatus.NotStarted ? x.rawEndTime : x.endTime;
         }
 
-				return (
-					<Card full={true} key={x.id}>
-						<Card.Header
-							title={
-								<span>
-									{x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : ''}
-									{x.description}
-								</span>
-							}
-							extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
-						/>
-						<Card.Body>
-							<div className={styles['reservation-range']}>
+        return (
+          <Card full={true} key={x.id}>
+            <Card.Header
+              title={
+                <span>
+                  {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : ''}
+                  {x.description}
+                </span>
+              }
+              extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
+            />
+            <Card.Body>
+              <div className={styles['reservation-range']}>
                 {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {dayjs(displayEndTime).format('MM-DD HH:mm')}
-							</div>
-							<div className={styles['reservation-status']}>
-								{x.creator}:{recordStatusDesc}
-							</div>
-						</Card.Body>
-					</Card>
-				);
-			})}
-		</div>
-	);
+              </div>
+              <div className={styles['reservation-status']}>
+                {x.creator}:{recordStatusDesc}
+              </div>
+            </Card.Body>
+          </Card>
+        );
+      })}
+    </div>
+  );
 }
 
 function mapStateToProps(state: any) {

@@ -6,22 +6,22 @@ import { MeetingRoom } from '@/apis/MeetingRoom';
  * @returns
  */
 const handleRoomList = () => {
-	return request(`/meetingrooms`);
+  return request(`/meetingrooms`);
 }
 
 const handleDoneReservation = (params) => {
-	return request.post(`/roomuserecords/finish`, params)
+  return request.post(`/roomuserecords/finish`, params)
 }
 
 export function reservationList({ roomId }: { roomId: string }) {
-	return request.get(`/meetingrooms/${roomId}/userecords`);
+  return request.get(`/meetingrooms/${roomId}/userecords`);
 }
 
 export function getMeetingRoom(roomId: string) {
-	return request.get(`/meetingrooms/${roomId}`) as Promise<MeetingRoom>;
+  return request.get(`/meetingrooms/${roomId}`) as Promise<MeetingRoom>;
 }
 
 export {
-	handleRoomList,
-	handleDoneReservation
+  handleRoomList,
+  handleDoneReservation
 }
