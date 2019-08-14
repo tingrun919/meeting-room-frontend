@@ -73,50 +73,37 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   }
 
   startTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
-    const otherValue = this.props.form.getFieldValue('endTime');
+    const endTime = this.props.form.getFieldValue('endTime');
     Toast.loading('正在检查时间段是否可用');
-    return this.checkReservationRange({
-      startTime: value,
-      endTime: otherValue
-    }).then(
-      () => {
+
+    return new Promise((resolve, reject) => {
+      if (dayjs(value).isAfter(dayjs(endTime))) {
+        return reject('开始时间不能晚于结束时间');
+      }
+      resolve();
+    })
+      .then(() =>
+        this.checkReservationRange({
+          startTime: value,
+          endTime: endTime
+        }))
+      .then(() => {
         Toast.hide();
         callback();
-      },
-      (msg: string) => {
+      })
+      .catch((msg: string) => {
         Toast.hide();
         Toast.fail(msg);
         callback(new Error(msg));
-      }
-    );
+      });
   };
 
   endTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
     const { form } = this.props;
-    const otherValue = form.getFieldValue('startTime');
-    Toast.loading('正在检查时间段是否可用');
-    return this.checkReservationRange({
-      startTime: otherValue,
-      endTime: value
-    }).then(
-      () => {
-        Toast.hide();
-        callback();
-      },
-      (msg: string) => {
-        Toast.hide();
-        Toast.fail(msg);
-        callback();
-        form.setFields({
-          startTime: {
-            value: otherValue,
-            errors: [
-              new Error(msg)
-            ]
-          }
-        });
-      }
-    );
+    form.validateFields(['startTime'], {
+      force: true
+    });
+    callback();
   };
 
   checkReservationRange: (options: Omit<InRecordExists, 'roomId'>) => Promise<void> =
