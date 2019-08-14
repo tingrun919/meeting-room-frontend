@@ -5,9 +5,9 @@ import MeetingRoomList from '../components/MeetingRoomList'
 
 
 export default function () {
-	return (
-		<div className={styles.normal}>
-			<MeetingRoomList />
-		</div>
-	);
+  return (
+    <div className={styles.normal}>
+      <MeetingRoomList />
+    </div>
+  );
 }
