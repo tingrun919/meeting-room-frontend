@@ -3,6 +3,7 @@ import router from 'umi/router';
 import { DispatchProp } from 'dva';
 import { RouteComponentProps } from 'react-router';
 import { get } from 'lodash';
+import DocumentTitle from 'react-document-title';
 import { ActivityIndicator, Accordion, Card, Toast, WhiteSpace } from 'antd-mobile';
 
 import MeetingRoomDetail from '@/components/MeetingRoomDetail';
@@ -41,6 +42,19 @@ export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
       });
   }, []);
 
+  let meetingRoomItem = null;
+  if (meetingRoom != null) {
+    meetingRoomItem = (
+      <DocumentTitle title={meetingRoom.name}>
+        <Card full={true}>
+          <Card.Body>
+            <MeetingRoomDetail meetingRoom={meetingRoom} />
+          </Card.Body>
+        </Card>
+      </DocumentTitle>
+    );
+  }
+
   return (
     <div className={styles['meetingroom-item']}>
       <ActivityIndicator
@@ -49,13 +63,7 @@ export default function MeetingRoomItem({ match }: MeetingRoomItemProps) {
         text="正在加载会议室"
       />
       <div className={styles['meetingroom-fixed']}>
-        {meetingRoom ? (
-          <Card full={true}>
-            <Card.Body>
-              <MeetingRoomDetail meetingRoom={meetingRoom} />
-            </Card.Body>
-          </Card>
-        ) : ''}
+        {meetingRoomItem}
         <Accordion>
           <Accordion.Panel header="添加预约" key="add-reservation">
             <AddReservation roomId={roomId} />
