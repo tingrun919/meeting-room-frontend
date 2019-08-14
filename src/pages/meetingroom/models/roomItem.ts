@@ -58,13 +58,14 @@ const model = {
       });
     },
     *create({ payload }, { call, put }) {
-      yield call(roomUseRecordService.create, payload);
+      const record = yield call(roomUseRecordService.create, payload);
       yield put.resolve({
         type: 'fetch',
         payload: {
           roomId: payload.meetingRoom
         }
       });
+      return record;
     },
 
     /**
