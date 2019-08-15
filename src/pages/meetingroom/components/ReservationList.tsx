@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { connect } from 'dva';
 import dayjs from 'dayjs';
-import { Card } from 'antd-mobile';
+import { Card, WhiteSpace } from 'antd-mobile';
 import { get } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -72,26 +72,29 @@ function ReservationList({
         }
 
         return (
-          <Card full={true} key={x.id}>
-            <Card.Header
-              title={
-                <span>
-                  {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : null}
+          <Fragment key={x.id}>
+            <Card full={true}>
+              <Card.Header
+                title={
+                  <span>
+                    {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : null}
                     {x.creator}
                     {x.description && ': ' + x.description}
-                </span>
-              }
-              extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
-            />
-            <Card.Body>
-              <div className={rangeClassNames.join(' ')}>
-                {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {displayEndTime}
-              </div>
-              <div className={styles['reservation-status']}>
+                  </span>
+                }
+                extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
+              />
+              <Card.Body>
+                <div className={rangeClassNames.join(' ')}>
+                  {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {displayEndTime}
+                </div>
+                <div className={styles['reservation-status']}>
                   {recordStatusDesc}
-              </div>
-            </Card.Body>
-          </Card>
+                </div>
+              </Card.Body>
+            </Card>
+            <WhiteSpace size="sm" />
+          </Fragment>
         );
       })}
     </div>
