@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { ListView, PullToRefresh } from 'antd-mobile';
+import { ListView, PullToRefresh, NoticeBar, Modal } from 'antd-mobile';
 import styles from './index.less';
 import MeetingRoomRow from '../MeetingRoomRow';
 
@@ -52,6 +52,20 @@ export default class MeetingRoomList extends PureComponent {
     this.handleRoomList()
   };
 
+  showAppInfo = () => {
+    Modal.alert(
+      '关于',
+      (
+        <ul className={styles.about}>
+          <li>新版UI 更好看</li>
+          <li>增加了提前完成预约的功能</li>
+          <li>由前端团队连前端带后端贡献</li>
+          <li>点确定才能关掉这个弹框</li>
+        </ul>
+      )
+    );
+  };
+
   render() {
     //每个item下方的组件
     const separator = (sectionID: any, rowID: any) => (
@@ -75,22 +89,29 @@ export default class MeetingRoomList extends PureComponent {
       )
     };
     return (
-      <ListView
-        dataSource={this.state.dataSource}//list-view 实例
-        useBodyScroll={this.state.useBodyScroll} //使用html的body作为滚动容器
-        renderRow={row} //从数据源中接收数据，返回一个渲染的组件来为这行数据进行渲染
-        renderSeparator={separator}
-        style={
-          this.state.useBodyScroll ? {} : {
-            height: this.state.height,
-          }}
-        className={styles.renderRow}
-        pullToRefresh={ //使用 pullToRefresh，需要和 PullToRefresh 组件一起使用
-          < PullToRefresh
-            refreshing={this.state.refreshing} //是否显示刷新状态
-            onRefresh={this.onRefresh} //刷新的回调，必选
-          />}
-      />
+      <>
+        <NoticeBar
+          onClick={this.showAppInfo}
+        >
+          会议室预约更新啦
+        </NoticeBar>
+        <ListView
+          dataSource={this.state.dataSource}//list-view 实例
+          useBodyScroll={this.state.useBodyScroll} //使用html的body作为滚动容器
+          renderRow={row} //从数据源中接收数据，返回一个渲染的组件来为这行数据进行渲染
+          renderSeparator={separator}
+          style={
+            this.state.useBodyScroll ? {} : {
+              height: this.state.height,
+            }}
+          className={styles.renderRow}
+          pullToRefresh={ //使用 pullToRefresh，需要和 PullToRefresh 组件一起使用
+            < PullToRefresh
+              refreshing={this.state.refreshing} //是否显示刷新状态
+              onRefresh={this.onRefresh} //刷新的回调，必选
+            />}
+        />
+      </>
     )
   }
 }
