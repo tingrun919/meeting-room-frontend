@@ -77,7 +77,8 @@ function ReservationList({
               title={
                 <span>
                   {x.useToken ? <FontAwesomeIcon icon="lock" className={styles['reservation-lock']} /> : null}
-                  {x.description}
+                    {x.creator}
+                    {x.description && ': ' + x.description}
                 </span>
               }
               extra={x.recordStatus === 'Closed' ? null : <PopoverComponent overlayData={itemData} record={x} />}
@@ -87,7 +88,7 @@ function ReservationList({
                 {dayjs(x.startTime).format('MM-DD HH:mm')} 到 {displayEndTime}
               </div>
               <div className={styles['reservation-status']}>
-                {x.creator}:{recordStatusDesc}
+                  {recordStatusDesc}
               </div>
             </Card.Body>
           </Card>
