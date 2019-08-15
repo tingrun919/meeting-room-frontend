@@ -1,16 +1,29 @@
-import React, { PureComponent } from 'react';
-import Link from 'umi/link';
+import React from 'react';
 import { connect } from 'dva';
+import Link from 'umi/link';
+
 import { ListView, PullToRefresh, NoticeBar, Modal } from 'antd-mobile';
+
 import styles from './index.less';
+
 import MeetingRoomRow from '../MeetingRoomRow';
 
-@connect(({ roomList, loading }) => ({
-  roomData: roomList.roomList,
-  loading: loading.models.roomList
-}))
-export default class MeetingRoomList extends PureComponent {
-  constructor(props: any) {
+interface MeetingRoomListProps {
+  roomData: any,
+  loading: boolean,
+  dispatch: any,
+}
+interface MeetingRoomListState {
+  dataSource: any,
+  refreshing: boolean,
+  height: number,
+  useBodyScroll: boolean,
+  isLoading?: boolean,
+}
+
+class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingRoomListState> {
+
+  constructor(props: MeetingRoomListProps) {
     super(props)
     const dataSource = new ListView.DataSource({
       rowHasChanged: (row1: any, row2: any) => row1 !== row2,
@@ -20,6 +33,7 @@ export default class MeetingRoomList extends PureComponent {
       refreshing: false,
       height: document.documentElement.clientHeight,
       useBodyScroll: false,
+      isLoading: props.loading,
     }
   }
 
@@ -27,7 +41,8 @@ export default class MeetingRoomList extends PureComponent {
    * 数据获取
    */
   handleRoomList = () => {
-    this.props.dispatch({
+    const { dispatch } = this.props
+    dispatch({
       type: 'roomList/fetchList',
     }).then(() => {
       const { roomData, loading } = this.props
@@ -46,7 +61,7 @@ export default class MeetingRoomList extends PureComponent {
   /**
    * 下拉刷新
    */
-  onRefresh = () => {
+  onRefresh = (): void => {
     const { loading } = this.props
     this.setState({ refreshing: true, isLoading: loading });
     this.handleRoomList()
@@ -78,7 +93,7 @@ export default class MeetingRoomList extends PureComponent {
       />
     );
     //item
-    const row = (rowData: any, sectionID: any, rowID: any) => {
+    const row = (rowData: any, rowID: any) => {
       return (
         <Link to={`/meetingroom/${rowData.id}`}>
           <MeetingRoomRow
@@ -106,7 +121,7 @@ export default class MeetingRoomList extends PureComponent {
             }}
           className={styles.renderRow}
           pullToRefresh={ //使用 pullToRefresh，需要和 PullToRefresh 组件一起使用
-            < PullToRefresh
+            <PullToRefresh
               refreshing={this.state.refreshing} //是否显示刷新状态
               onRefresh={this.onRefresh} //刷新的回调，必选
             />}
@@ -115,3 +130,12 @@ export default class MeetingRoomList extends PureComponent {
     )
   }
 }
+
+function MapStateToProps(state: any) {
+  return {
+    loading: state.loading.models.roomList,
+    roomData: state.roomList.roomList,
+  }
+}
+
+export default connect(MapStateToProps)(MeetingRoomList);

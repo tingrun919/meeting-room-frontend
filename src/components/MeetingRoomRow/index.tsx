@@ -5,7 +5,12 @@ import { Card } from 'antd-mobile';
 import MeetingRoomDetail from '../MeetingRoomDetail'
 import MeetingRoomReservation from './components/MeetingRoomReservation';
 
-const MeetingRoomRow = ({ rowData, rowID }) => {
+interface MeetingRoomRowProps {
+  rowData: any,
+  rowID: any,
+}
+
+const MeetingRoomRow = ({ rowData, rowID }: MeetingRoomRowProps) => {
   return (
     <Card
       key={rowID}

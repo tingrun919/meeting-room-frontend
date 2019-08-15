@@ -14,8 +14,8 @@ import styles from './MeetingRoomItem.less';
 
 interface MeetingRoomItemProps
   extends RouteComponentProps<{ id: string }>, DispatchProp {
-    loading: boolean;
-    meetingRoom: MeetingRoom;
+  loading: boolean;
+  meetingRoom: MeetingRoom;
 }
 
 function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) {
@@ -59,13 +59,13 @@ function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) 
       </div>
       <WhiteSpace size="xl" />
       <div className={styles['meetingroom-reservations']}>
-        {meetingRoom && <ReservationList roomId={roomId}/>}
+        {meetingRoom && <ReservationList roomId={roomId} />}
       </div>
     </div>
   );
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     meetingRoom: state.roomItem.meetingRoom,
     loading: state.loading.effects['roomItem/fetchMeetingRoom']

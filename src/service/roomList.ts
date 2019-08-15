@@ -9,7 +9,7 @@ const handleRoomList = () => {
   return request(`/meetingrooms`);
 }
 
-const handleDoneReservation = (params) => {
+const handleDoneReservation = (params: any) => {
   return request.post(`/roomuserecords/finish`, params)
 }
 

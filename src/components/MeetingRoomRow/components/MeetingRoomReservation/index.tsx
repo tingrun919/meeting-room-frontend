@@ -2,17 +2,13 @@ import React from 'react';
 import styles from '../../index.less'
 import dayjs from '@/utils/dayjs';
 
-export default class MeetingRoomReservation extends React.PureComponent {
-
-  constructor(props: any) {
-    super(props);
-  }
+export default class MeetingRoomReservation extends React.PureComponent<{ reservationData: any }> {
 
   render() {
-    let current = {
+    let current: any = {
       creator: '暂无'
     };
-    let next = {
+    let next: any = {
       creator: '暂无'
     };
     const { reservationData } = this.props
