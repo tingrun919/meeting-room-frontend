@@ -57,7 +57,7 @@ function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) 
           </Accordion.Panel>
         </Accordion>
       </div>
-      <WhiteSpace size="lg" />
+      <WhiteSpace size="xl" />
       <div className={styles['meetingroom-reservations']}>
         {meetingRoom && <ReservationList roomId={roomId}/>}
       </div>
