@@ -4,7 +4,7 @@ import DocumentTitle from 'react-document-title';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import { WingBlank } from 'antd-mobile';
 
-const BasicLayout: React.FC = props => {
+const BasicLayout: React.FC = (props: any) => {
   const { location } = props;
   return (
     <DocumentTitle title="会议室预约">

@@ -2,15 +2,25 @@ import React from 'react';
 import { connect } from 'dva';
 import { Popover, Icon, Modal, Toast } from 'antd-mobile';
 
-const Item = Popover.Item;
+const Item: any = Popover.Item;
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
-@connect(({ roomItem }) => ({
-}))
-export default class PopoverComponent extends React.PureComponent {
+interface PopoverProps {
+  overlayData: Array<OverlayData>,
+  record: object,
+  dispatch: any,
+}
 
-  constructor(props) {
+interface OverlayData {
+  icon: string,
+  iconSize?: undefined,
+  title: string
+}
+
+class PopoverComponent extends React.PureComponent<PopoverProps, { visible: boolean }> {
+
+  constructor(props: any) {
     super(props)
 
     this.state = {
@@ -19,21 +29,22 @@ export default class PopoverComponent extends React.PureComponent {
   }
 
 
-  handleVisibleChange = (visible) => {
+  handleVisibleChange = (visible: boolean) => {
     this.setState({
       visible,
     });
   };
 
-  handleDoneReservation = (record, token) => {
+  handleDoneReservation = (record: any, token: string) => {
+    const { dispatch } = this.props;
     let obj = {
       recordId: record.id,
       token: token,
     }
-    this.props.dispatch({
+    dispatch({
       type: 'roomItem/fetchReservationDone',
       payload: obj
-    }).then(res => {
+    }).then((res: any) => {
       if (res) {
         Toast.success('完成成功！')
       }
@@ -41,7 +52,7 @@ export default class PopoverComponent extends React.PureComponent {
   }
 
 
-  onSelect = (opt) => {
+  onSelect = (opt: any) => {
     this.setState({
       visible: false,
     });
@@ -49,7 +60,7 @@ export default class PopoverComponent extends React.PureComponent {
       prompt('完成会议', '是否确认提前完成会议', [
         { text: '取消' },
         { text: '确认', onPress: value => this.handleDoneReservation(opt.props.value, value) },
-      ], 'default', null, ['请输入Token'])
+      ], 'default', '', ['请输入Token'])
     } else {
       alert('完成会议', '是否确认提前完成会议', [
         { text: '取消' },
@@ -65,7 +76,7 @@ export default class PopoverComponent extends React.PureComponent {
         <Item
           key="5"
           value={record}
-          icon={<Icon type={i.icon} size={i.iconSize ? i.iconSize : 'xs'} />}
+          icon={<Icon type={i.icon} size={(i.iconSize ? i.iconSize : 'xs')} />}
         >
           {i.title}
         </Item>
@@ -80,6 +91,10 @@ export default class PopoverComponent extends React.PureComponent {
         visible={this.state.visible}
         overlay={this.handleOverlay()}
         align={{
+          overflow: {
+            adjustY: 0,
+            adjustX: 0,
+          },
           offset: [1, -4],
         }}
         onVisibleChange={this.handleVisibleChange}
@@ -96,3 +111,5 @@ export default class PopoverComponent extends React.PureComponent {
     )
   }
 }
+
+export default connect()(PopoverComponent)
