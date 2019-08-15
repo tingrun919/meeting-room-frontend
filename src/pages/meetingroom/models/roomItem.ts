@@ -3,20 +3,62 @@ import router from 'umi/router';
 import { SubscriptionAPI, EffectsCommandMap } from 'dva';
 import { Toast } from 'antd-mobile';
 import { get } from 'lodash';
+import { Reducer, Action, AnyAction } from 'redux';
+import { EffectsActionsMapping, DvaUmiModel } from '@/DvaUmiModel';
 
 import roomUseRecordService from '@/service/roomUseRecord';
 import { getMeetingRoom } from '@/service/roomList';
 import { MeetingRoom } from '@/apis/MeetingRoom';
+import { RoomUseRecord, CreateRoomUseRecord } from '@/apis/RoomUseRecord';
 
 const MeetingRoomPagePattern = /^\/meetingroom\/(.*)$/;
 
-const model = {
+// #region Model Types
+export interface RoomItemState {
+  meetingRoom?: MeetingRoom;
+  reservationList?: RoomUseRecord[];
+}
+
+interface SetMeetingRoomAction extends Action {
+  payload: { meetingRoom: MeetingRoom };
+}
+
+interface ReservationListAction extends Action {
+  payload: { data: RoomUseRecord[] };
+}
+
+interface FetchMeetingRoomAction extends Action {
+  payload: { roomId: string };
+}
+
+interface FetchReservationAction extends Action {
+  payload: { roomId: string };
+}
+
+interface CreateAction extends Action {
+  payload: CreateRoomUseRecord;
+}
+
+interface RoomItemReducers {
+  setMeetingRoom: Reducer<RoomItemState, SetMeetingRoomAction>;
+  reservationList: Reducer<RoomItemState, ReservationListAction>;
+}
+
+type RoomItemEffects = EffectsActionsMapping<{
+  fetchMeetingRoom: FetchMeetingRoomAction;
+  fetch: FetchReservationAction;
+  create: CreateAction;
+  fetchReservationDone: AnyAction;
+}>;
+// #endregion
+
+const model: DvaUmiModel<RoomItemReducers, RoomItemEffects> = {
   state: {
     meetingRoom: null,
     reservationList: [],
   },
   reducers: {
-    setMeetingRoom(state, { payload }: { payload: { meetingRoom: MeetingRoom } }) {
+    setMeetingRoom(state, { payload }) {
       return {
         ...state,
         meetingRoom: payload.meetingRoom
@@ -30,7 +72,7 @@ const model = {
     },
   },
   effects: {
-    *fetchMeetingRoom({ payload }: { payload: { roomId: string } }, { call, put }: EffectsCommandMap) {
+    *fetchMeetingRoom({ payload }, { call, put }: EffectsCommandMap) {
       try {
         const meetingRoom = yield call(getMeetingRoom, payload.roomId);
         yield put({
@@ -48,7 +90,7 @@ const model = {
         });
       }
     },
-    *fetch({ payload }: { payload: { roomId: string } }, { call, put }) {
+    *fetch({ payload }, { call, put }) {
       const result = yield call(reservationList, payload);
       yield put({
         type: 'reservationList',
@@ -74,7 +116,7 @@ const model = {
     *fetchReservationDone({ payload }, { call, select, put }: EffectsCommandMap) {
       try {
         const response = yield call(handleDoneReservation, payload);
-        const meetingRoom = yield select(state => state.roomItem.meetingRoom);
+        const meetingRoom = yield select((state: { roomItem: RoomItemState }) => state.roomItem.meetingRoom);
         yield put({
           type: 'fetch',
           payload: {
