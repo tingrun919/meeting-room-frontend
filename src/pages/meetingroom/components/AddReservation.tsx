@@ -8,13 +8,12 @@ import styles from './AddReservation.css';
 import roomUseRecordService, { InRecordExists } from '@/service/roomUseRecord';
 import { RoomUseRecord } from '@/apis/RoomUseRecord';
 
-interface AddReservationProps {
-  form: any;
-  dispatch: any;
-  loading: boolean;
+interface AddReservationNeedsProps {
+  form?: any;
   roomId: string;
   onAdded?: (record: RoomUseRecord) => void;
 }
+
 interface AddReservationState {
   startTime: Date;
   endTime: Date;
@@ -25,7 +24,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   tokenInput!: InputItem;
   minDate = dayjs('2016-1-1').toDate();
 
-  constructor(props: any, context?: any) {
+  constructor(props: AddReservationProps, context?: any) {
     super(props, context);
 
     const startTime = dayjs().startOf('hour').add(1, 'hour');
@@ -55,7 +54,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   onSubmit = () => {
     const { form, dispatch, roomId } = this.props;
     form.validateFields({ force: true })
-      .then(values => {
+      .then((values: any) => {
         Toast.loading('正在创建预约', 0);
         const record = Object.assign({}, values, {
           meetingRoom: roomId
@@ -77,7 +76,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
       });
   }
 
-  startTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
+  startTimeChanged = (rules: unknown, value: string, callback: (error?: Error) => void) => {
     const endTime = this.props.form.getFieldValue('endTime');
     Toast.loading('正在检查时间段是否可用');
 
@@ -103,7 +102,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
       });
   };
 
-  endTimeChanged = (rules, value: string, callback: (error?: Error) => void) => {
+  endTimeChanged = (rules: unknown, value: string, callback: (error?: Error) => void) => {
     const { form } = this.props;
     form.validateFields(['startTime'], {
       force: true
@@ -205,10 +204,14 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   }
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: any, ownProps: AddReservationNeedsProps) {
   return {
     loading: state.loading.effects['roomItem/create']
   };
 }
 
-export default connect(mapStateToProps)(createForm()(AddReservation));
+const wrappedComponent = connect(mapStateToProps)(createForm()(AddReservation));
+
+type AddReservationProps = typeof wrappedComponent;
+
+export default wrappedComponent;
