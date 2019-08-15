@@ -1,6 +1,23 @@
 import { handleRoomList } from '../service/roomList';
+import { Action, Reducer } from 'redux';
+import { DvaUmiModel } from '../DvaUmiModel';
+import { MeetingRoom } from '@/apis/MeetingRoom';
 
-export default {
+// #region Model Types
+interface RoomListState {
+  roomList: MeetingRoom[];
+}
+
+interface SetRoomList extends Action {
+  payload: MeetingRoom[];
+}
+
+interface RoomListReducers {
+  setRoomList: Reducer<RoomListState, SetRoomList>;
+}
+// #endregion
+
+const model: DvaUmiModel<RoomListReducers> = {
   namespace: 'roomList',
   state: {
     roomList: [],
@@ -23,3 +40,5 @@ export default {
     }
   }
 }
+
+export default model;
