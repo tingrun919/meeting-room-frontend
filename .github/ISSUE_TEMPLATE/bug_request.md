@@ -1,5 +1,6 @@
 ---
 name: Bug request
+about: Use this template for reporting bugs.
 ---
 
 
