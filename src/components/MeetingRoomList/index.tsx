@@ -84,6 +84,7 @@ class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingR
   };
 
   render() {
+    const { user } = this.props;
     //每个item下方的组件
     const separator = (sectionID: any, rowID: any) => (
       <div
@@ -108,9 +109,10 @@ class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingR
     return (
       <>
         <NoticeBar
+          style={{textAlign: 'initial'}}
           onClick={this.showAppInfo}
         >
-          会议室预约更新啦
+          {user == null ? '会议室预约更新啦' : `欢迎你，${user.name}`}
         </NoticeBar>
         <ListView
           dataSource={this.state.dataSource}//list-view 实例
