@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'dva';
+import { connect, DispatchProp } from 'dva';
 import Link from 'umi/link';
 
 import { ListView, PullToRefresh, NoticeBar, Modal } from 'antd-mobile';
@@ -8,10 +8,9 @@ import styles from './index.less';
 
 import MeetingRoomRow from '../MeetingRoomRow';
 
-interface MeetingRoomListProps {
+interface MeetingRoomListProps extends DispatchProp {
   roomData: any,
   loading: boolean,
-  dispatch: any,
 }
 interface MeetingRoomListState {
   dataSource: any,
@@ -93,7 +92,7 @@ class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingR
       />
     );
     //item
-    const row = (rowData: any, rowID: any) => {
+    const row = (rowData: any, sectionID: any, rowID: any) => {
       return (
         <Link to={`/meetingroom/${rowData.id}`}>
           <MeetingRoomRow
@@ -131,11 +130,11 @@ class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingR
   }
 }
 
-function MapStateToProps(state: any) {
+function mapStateToProps(state: any) {
   return {
     loading: state.loading.models.roomList,
     roomData: state.roomList.roomList,
   }
 }
 
-export default connect(MapStateToProps)(MeetingRoomList);
+export default connect(mapStateToProps)(MeetingRoomList);
