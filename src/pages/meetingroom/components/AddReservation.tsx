@@ -10,6 +10,7 @@ import { GlobalState } from '@/models-helper/models';
 import { RoomUseRecord } from '@/apis/RoomUseRecord';
 
 interface AddReservationNeedsProps {
+  dispatch: any;
   form?: any;
   roomId: string;
   onAdded?: (record: RoomUseRecord) => void;
@@ -19,6 +20,14 @@ interface AddReservationState {
   startTime: Date;
   endTime: Date;
 }
+
+function mapStateToProps(state: GlobalState, ownProps: AddReservationNeedsProps) {
+  return {
+    loading: state.loading.effects['roomItem/create']
+  };
+}
+
+type AddReservationProps = ReturnType<typeof mapStateToProps> & AddReservationNeedsProps;
 
 class AddReservation extends React.Component<AddReservationProps, AddReservationState> {
   creatorInput!: InputItem;
@@ -205,14 +214,4 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   }
 }
 
-function mapStateToProps(state: GlobalState, ownProps: AddReservationNeedsProps) {
-  return {
-    loading: state.loading.effects['roomItem/create']
-  };
-}
-
-const wrappedComponent = connect(mapStateToProps)(createForm()(AddReservation));
-
-type AddReservationProps = typeof wrappedComponent;
-
-export default wrappedComponent;
+export default connect(mapStateToProps)(createForm()(AddReservation));
