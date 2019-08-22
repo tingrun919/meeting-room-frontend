@@ -20,7 +20,7 @@ interface OverlayData {
 
 class PopoverComponent extends React.PureComponent<PopoverProps, { visible: boolean }> {
 
-  constructor(props: any) {
+  constructor(props: PopoverProps) {
     super(props)
 
     this.state = {
