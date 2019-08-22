@@ -8,13 +8,14 @@ import MeetingRoomDetail from '@/components/MeetingRoomDetail';
 import AddReservation from './components/AddReservation';
 import ReservationList from './components/ReservationList';
 
+import { GlobalState } from '@/models-helper/models';
 import { MeetingRoom } from '@/apis/MeetingRoom';
 
 import styles from './MeetingRoomItem.less';
 
 interface MeetingRoomItemProps
   extends RouteComponentProps<{ id: string }>, DispatchProp {
-  loading: boolean;
+  loading?: boolean;
   meetingRoom: MeetingRoom;
 }
 
@@ -65,9 +66,9 @@ function MeetingRoomItem({ match, loading, meetingRoom }: MeetingRoomItemProps) 
   );
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: GlobalState) {
   return {
-    meetingRoom: state.roomItem.meetingRoom,
+    meetingRoom: state.roomItem!.meetingRoom,
     loading: state.loading.effects['roomItem/fetchMeetingRoom']
   };
 }

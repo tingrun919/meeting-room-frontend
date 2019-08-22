@@ -1,18 +1,18 @@
 import React, { Fragment, useEffect } from 'react';
-import { connect } from 'dva';
+import { connect, DispatchProp } from 'dva';
 import dayjs from 'dayjs';
 import { Card, WhiteSpace } from 'antd-mobile';
 import { get } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { GlobalState } from '@/models-helper/models';
 import { RoomUseRecord, Status, RecordStatus } from '@/apis/RoomUseRecord';
 import PopoverComponent from '@/components/PopoverComponent';
 
 import styles from './ReservationList.less';
 
-interface ReservationListProps {
+interface ReservationListProps extends DispatchProp {
   roomId: string;
-  dispatch: any;
   reservationList: RoomUseRecord[];
 }
 
@@ -101,9 +101,9 @@ function ReservationList({
   );
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: GlobalState) {
   return {
-    reservationList: state.roomItem.reservationList
+    reservationList: state.roomItem!.reservationList
   };
 }
 
