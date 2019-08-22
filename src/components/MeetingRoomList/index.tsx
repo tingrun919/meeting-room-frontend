@@ -1,16 +1,19 @@
 import React from 'react';
-import { connect, DispatchProp } from 'dva';
+import { connect } from 'dva';
 import Link from 'umi/link';
 
 import { ListView, PullToRefresh, NoticeBar, Modal } from 'antd-mobile';
+
+import { GlobalState } from '@/models-helper/models';
 
 import styles from './index.less';
 
 import MeetingRoomRow from '../MeetingRoomRow';
 
-interface MeetingRoomListProps extends DispatchProp {
+interface MeetingRoomListProps {
+  dispatch: any;
   roomData: any,
-  loading: boolean,
+  loading?: boolean,
 }
 interface MeetingRoomListState {
   dataSource: any,
@@ -130,7 +133,7 @@ class MeetingRoomList extends React.PureComponent<MeetingRoomListProps, MeetingR
   }
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: GlobalState) {
   return {
     loading: state.loading.models.roomList,
     roomData: state.roomList.roomList,

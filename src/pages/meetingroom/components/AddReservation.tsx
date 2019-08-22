@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 
 import styles from './AddReservation.css';
 import roomUseRecordService, { InRecordExists } from '@/service/roomUseRecord';
+import { GlobalState } from '@/models-helper/models';
 import { RoomUseRecord } from '@/apis/RoomUseRecord';
 
 interface AddReservationNeedsProps {
@@ -204,7 +205,7 @@ class AddReservation extends React.Component<AddReservationProps, AddReservation
   }
 }
 
-function mapStateToProps(state: any, ownProps: AddReservationNeedsProps) {
+function mapStateToProps(state: GlobalState, ownProps: AddReservationNeedsProps) {
   return {
     loading: state.loading.effects['roomItem/create']
   };
