@@ -4,7 +4,7 @@ import { SubscriptionAPI, EffectsCommandMap } from 'dva';
 import { Toast } from 'antd-mobile';
 import { get } from 'lodash';
 import { Reducer, Action, AnyAction } from 'redux';
-import { EffectsActionsMapping, DvaUmiModel } from '@/DvaUmiModel';
+import { EffectsActionsMapping, DvaUmiModel } from '@/models-helper/DvaUmiModel';
 
 import roomUseRecordService from '@/service/roomUseRecord';
 import { getMeetingRoom } from '@/service/roomList';

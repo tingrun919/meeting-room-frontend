@@ -1,6 +1,6 @@
 import { handleRoomList } from '../service/roomList';
 import { Action, Reducer } from 'redux';
-import { DvaUmiModel } from '../DvaUmiModel';
+import { DvaUmiModel } from '@/models-helper/DvaUmiModel';
 import { MeetingRoom } from '@/apis/MeetingRoom';
 
 // #region Model Types
